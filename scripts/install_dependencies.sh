@@ -18,7 +18,7 @@ if [ "$DISTRIB_RELEASE" = "20.04" ]; then
 	sudo apt install -y libboost-system-dev libboost-thread-dev libboost-python-dev
 
 	# Pin the new kernel (to avoid recompiling custom modules)
-	sudo apt-mark hold linux-lowlatency
+        #	sudo apt-mark hold linux-lowlatency
 	
 	# Set the lowlatency kernel as the default in grub (survive apt upgrades)
 	menu=`grep menuentry.*gnulinux-advanced /boot/grub/grub.cfg -m 1 |cut -d\' -f4`
@@ -29,9 +29,15 @@ if [ "$DISTRIB_RELEASE" = "20.04" ]; then
 	sudo update-grub
 
 	# Download and Install patched Libconfig 1.4.5 (supporting C & C++ simultaneously)
-	cd ~/Downloads && wget http://web.barrett.com/support/WAM_Installer/libconfig-1.4.5-PATCHED.tar.gz
+	cd ~/JX_Linux
+       	wget http://web.barrett.com/support/WAM_Installer/libconfig-1.4.5-PATCHED.tar.gz
 	tar -xf libconfig-1.4.5-PATCHED.tar.gz
-	cd libconfig-1.4.5 && ./configure && make -j$(nproc)
+	cd libconfig-1.4.5 
+	echo "[jx] patching kernel guesses ..."
+	wget -O config.guess 'http://git.savannah.gnu.org/gitweb/?p=config.git;a=blob_plain;f=config.guess;hb=HEAD'
+	wget -O config.sub 'http://git.savannah.gnu.org/gitweb/?p=config.git;a=blob_plain;f=config.sub;hb=HEAD'
+	./configure  --build=arm64-unknown-linux-gnu
+       	make -j$(nproc)
 	sudo make install
 	sudo ldconfig
 else
