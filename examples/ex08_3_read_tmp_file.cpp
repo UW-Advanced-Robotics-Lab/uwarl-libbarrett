@@ -35,8 +35,9 @@ template<size_t DOF>
 int wam_main(int argc, char** argv, ProductManager& pm, systems::Wam<DOF>& wam) {
 	BARRETT_UNITS_TEMPLATE_TYPEDEFS(DOF);
 	typedef boost::tuple<double, jp_type> jp_sample_type;
+	typedef boost::tuple<double, double> bo_tu_type;
 
-	char tmpFile[] = "/tmp/btXXXXXX";
+	char tmpFile[] = "/home/robot/libbarrett_examples/btvlwW4T";
 	/*
 	if (mkstemp(tmpFile) == -1) {
 		printf("ERROR: Couldn't create temporary file!\n");
@@ -87,14 +88,30 @@ int wam_main(int argc, char** argv, ProductManager& pm, systems::Wam<DOF>& wam) 
 
 	// Read joint 1 of 1st reading
 	jp_sample_type first_red = vec[0];
+	// bo_tu_type example(3.14,3.15);
+	// std::cout << "Current time: " << example.get<0>() << " sec." << std::endl;
 	// Seperate out the tupple
 	// Time
-	double curr_t = jp_sample_type.get<0>();
+	double curr_t = boost::get<0>(first_red);
 	std::cout << "Current time: " << curr_t << " sec." << std::endl;
 	// Joint state
-	jp_type curr_state = jp_sample_type.get<1>();
+	jp_type curr_state = boost::get<1>(first_red);
+	// What is the current system DOF?
+	std::cout << "Current system DOF: " << DOF << " -." << std::endl;
 	// Joint 1 reading
 	std::cout << "Current joint 1 state: " << curr_state[0] << " rad." << std::endl;
+	// Joint 2 reading
+	std::cout << "Current joint 2 state: " << curr_state[1] << " rad." << std::endl;
+	// Joint 3 reading
+	std::cout << "Current joint 3 state: " << curr_state[2] << " rad." << std::endl;
+	// Joint 4 reading
+	std::cout << "Current joint 4 state: " << curr_state[3] << " rad." << std::endl;
+	// Joint 5 reading
+	std::cout << "Current joint 5 state: " << curr_state[4] << " rad." << std::endl;
+	// Joint 6 reading
+	std::cout << "Current joint 6 state: " << curr_state[5] << " rad." << std::endl;
+	// Joint 7 reading
+	std::cout << "Current joint 7 state: " << curr_state[6] << " rad." << std::endl;
 	/*
 	math::Spline<jp_type> spline(vec);
 
