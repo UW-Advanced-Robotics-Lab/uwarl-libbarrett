@@ -87,15 +87,16 @@ int wam_main(int argc, char** argv, ProductManager& pm, systems::Wam<DOF>& wam) 
 	}
 
 	// Read joint 1 of 1st reading
-	jp_sample_type first_red = vec[0];
+	// jp_sample_type first_red = vec[0];
 	// bo_tu_type example(3.14,3.15);
 	// std::cout << "Current time: " << example.get<0>() << " sec." << std::endl;
 	// Seperate out the tupple
 	// Time
-	double curr_t = boost::get<0>(first_red);
+	double curr_t = boost::get<0>(vec[0]);
 	std::cout << "Current time: " << curr_t << " sec." << std::endl;
+	std::cout << "Next time: " << boost::get<0>(vec[1]) << " sec." << std::endl;
 	// Joint state
-	jp_type curr_state = boost::get<1>(first_red);
+	jp_type curr_state = boost::get<1>(vec[0]);
 	// What is the current system DOF?
 	std::cout << "Current system DOF: " << DOF << " -." << std::endl;
 	// Joint 1 reading
