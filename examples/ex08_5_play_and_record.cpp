@@ -177,24 +177,24 @@ int wam_main(int argc, char** argv, ProductManager& pm, systems::Wam<DOF>& wam) 
 
 	std::cout << "WAM in idle-state. Writing recorded trajectory to file ..." << std::endl;
 	// Read the logger data into a vector
-	log::Reader<jp_sample_type> lr(tmpFile);
-	std::vector<jp_sample_type> vec_tmp_File;
+	log::Reader<jp_sample_type> lr(recTrajFile);
+	std::vector<jp_sample_type> vec_rec_Traj_File;
 	for (size_t i = 0; i < lr.numRecords(); ++i) {
-		vec_tmp_File.push_back(lr.getRecord());
+		vec_rec_Traj_File.push_back(lr.getRecord());
 	}
 	// Output stuff to an external file
     std::ofstream outfile ("traj_file.txt");
     // Set precision: tells the maximum number of digits to use not the minimum; so no trailing zeros (https://stackoverflow.com/a/17342002/19163020)
     outfile << std::setprecision (std::numeric_limits<double>::digits10 + 1);
-    // Output each element of the vector vec_tmp_File at a time
-    for (size_t row_index = 0; row_index<vec_tmp_File.size(); ++row_index)
+    // Output each element of the vector vec_rec_Traj_File at a time
+    for (size_t row_index = 0; row_index<vec_rec_Traj_File.size(); ++row_index)
     {
         // Write the time of the recording
-        outfile << boost::get<0>(vec_tmp_File[row_index]) << ",";
+        outfile << boost::get<0>(vec_rec_Traj_File[row_index]) << ",";
 		// Write the joint positions
         for (size_t col_index = 0; col_index<DOF; ++col_index)
         {
-            outfile << "," << boost::get<1>(vec_tmp_File[row_index])[col_index];
+            outfile << "," << boost::get<1>(vec_rec_Traj_File[row_index])[col_index];
         }
         // Start on new line
         outfile << std::endl;
