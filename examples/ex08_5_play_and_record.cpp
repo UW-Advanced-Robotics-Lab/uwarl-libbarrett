@@ -166,10 +166,29 @@ int wam_main(int argc, char** argv, ProductManager& pm, systems::Wam<DOF>& wam) 
 	disconnect(jpLogger.input);
 
 	std::cout << "Finished following the user-provided trajectory, and stopped recording the actual joint positions." << std::endl;
-
 	printf("Press [Enter] to idle the WAM.\n");
 	waitForEnter();
 	wam.idle();
+
+	std::cout << "Writing recorded trajectory to file ..." << std::endl;
+	// Output stuff to an external file
+    std::ofstream outfile ("test.txt");
+    // Set precision: tells the maximum number of digits to use not the minimum; so no trailing zeros (https://stackoverflow.com/a/17342002/19163020)
+    outfile << std::setprecision (std::numeric_limits<double>::digits10 + 1);
+    // Output each element of the vector vec at a time
+    for (jp_sample_type tmp_jp_sample_type: vec)
+    {
+        // Write the time of the recording
+        outfile << boost::get<0>(tmp_jp_sample_type) << ",";
+		// Write the joint positions
+        for (size_t col_index = 0; col_index<DOF; ++col_index)
+        {
+            outfile << "," << boost::get<0>(tmp_jp_sample_type)[col_index];
+        }
+        // Start on new line
+        outfile << std::endl;
+    }
+    std::cout << "Done writing to file." << std::endl;
 
 
 	//std::remove(tmpFile);
