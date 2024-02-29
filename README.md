@@ -89,3 +89,74 @@ cmake . -G"Eclipse CDT4 - Unix Makefiles"
 ```
 Then import the generated project into your Eclipse workspace using:
 File -> Import -> General -> Existing Projects into Workspace
+
+### Gravity Calibration
+
+For gravity calibration, follow the instructions on [Barrett Wiki](https://support.barrett.com/wiki/WAM/Calibration).
+
+The default `cal.conf` has the following look:
+
+```
+# WAM Gravity Calibration Pose Configuration
+
+calibration-poses-wam4{
+    poseCount = 5
+    pose[] = < 0.0, -1.5708,     0.0,    0.0 >
+    pose[] = < 0.0, -1.5708, -1.5708, 1.5708 >
+    pose[] = < 0.0,     0.0, -1.5708, 1.5708 >
+    pose[] = < 0.0,     0.0,     0.0,    0.0 >
+    pose[] = < 0.0,  1.5708,     0.0,    0.0 >
+}
+
+# Note - J5 joint stops are at +1.24 and -4.76
+#        J6 joint stops are at +1.57 and -1.57
+calibration-poses-wam7{
+   poseCount = 9
+   pose[] = <     0.0, -1.5708,     0.0,  1.5708,     0.0,     0.0,     0.0 >
+   pose[] = <  0.7854, -1.5708,  1.5708,  1.5708, -1.5708,     0.0,     0.0 >
+   pose[] = < -0.7854, -1.5708, -1.5708,  1.5708, -1.5708,     0.0,     0.0 >
+   pose[] = < -0.7854,  1.5708,  1.5708,  1.5708,     0.0,     1.5,     0.0 >
+   pose[] = <     0.0,  0.7854,     0.0,  2.3562,     0.0, -0.7854,     0.0 > 
+   pose[] = <  0.7854,  1.5708, -1.5708,  1.5708,     0.0,     1.5,     0.0 >
+   pose[] = <     0.0,     0.0,  0.7854,  1.5708,  0.7854,  0.7854,  0.7854 >
+   pose[] = <     0.0,  1.5708, -1.5708, -0.3927,  0.7854, -1.0781, -0.7854 >
+   pose[] = < -0.7854,  0.7854, -0.7854, -0.7854,  0.7854, -0.7854,  0.7854 >
+}
+```
+
+According to the [Barrett Wiki](https://support.barrett.com/wiki/WAM/Calibration), gravity calibration process approaches these poses twice: once from larger joint angle values, and once from lower joint angle values. This is because the joint torques expereinced during bothe these approaches are different, and so they take their average and record it.
+
+Because of this, we cannot have joint angles of these sample poses too close to the physical joint-angle limits of each joint. So, we extend the information for joint angle limits to other joints and replace it with the following copy:
+
+```
+# WAM Gravity Calibration Pose Configuration
+
+calibration-poses-wam4{
+    poseCount = 5
+    pose[] = < 0.0, -1.5708,     0.0,    0.0 >
+    pose[] = < 0.0, -1.5708, -1.5708, 1.5708 >
+    pose[] = < 0.0,     0.0, -1.5708, 1.5708 >
+    pose[] = < 0.0,     0.0,     0.0,    0.0 >
+    pose[] = < 0.0,  1.5708,     0.0,    0.0 >
+}
+
+# Note - J1 joint stops are at +2.6  and -2.6  rad
+#        J2 joint stops are at +2.0  and -2.0  rad
+#        J3 joint stops are at +2.8  and -2.8  rad
+#        J4 joint stops are at +3.1  and -0.9  rad
+#        J5 joint stops are at +1.24 and -4.76 rad
+#        J6 joint stops are at +1.57 and -1.57 rad | They are slightly different on the official wiki (https://support.barrett.com/wiki/WAM/KinematicsJointRangesConversionFactors)
+#        J7 joint stops are at +3.0  and -3.0  rad
+calibration-poses-wam7{
+   poseCount = 9
+   pose[] = <     0.0, -1.5708,     0.0,  1.5708,     0.0,     0.0,     0.0 >
+   pose[] = <  0.7854, -1.5708,  1.5708,  1.5708, -1.5708,     0.0,     0.0 >
+   pose[] = < -0.7854, -1.5708, -1.5708,  1.5708, -1.5708,     0.0,     0.0 >
+   pose[] = < -0.7854,  1.5708,  1.5708,  1.5708,     0.0,     1.5,     0.0 >
+   pose[] = <     0.0,  0.7854,     0.0,  2.3562,     0.0, -0.7854,     0.0 > 
+   pose[] = <  0.7854,  1.5708, -1.5708,  1.5708,     0.0,     1.5,     0.0 >
+   pose[] = <     0.0,     0.0,  0.7854,  1.5708,  0.7854,  0.7854,  0.7854 >
+   pose[] = <     0.0,  1.5708, -1.5708, -0.3927,  0.7854, -1.0781, -0.7854 >
+   pose[] = < -0.7854,  0.7854, -0.7854, -0.7854,  0.7854, -0.7854,  0.7854 >
+}
+```
