@@ -92,7 +92,7 @@ File -> Import -> General -> Existing Projects into Workspace
 
 ### Gravity Calibration
 
-For gravity calibration, follow the instructions on [Barrett Wiki](https://support.barrett.com/wiki/WAM/Calibration).
+For gravity calibration, follow the instructions on the [Quick Start Guide](https://web.barrett.com/support/WAM_Documentation/WAM_QuickStartGuide.pdf). Do not follow process defined in [Barrett Wiki](https://support.barrett.com/wiki/WAM/Calibration), as the function `./calibrate`->`Calibrate Gravity Compensation` fails to load.
 
 The default `cal.conf` has the following look:
 
@@ -184,4 +184,7 @@ com = <0.006, 0.0, 0.057> # BarrettHand BH8-280 (https://support.barrett.com/wik
              <-0.00000366, 0.00207291,-0.00000102 >,
              < 0.00001980,-0.00000102, 0.00161521 >> # BarrettHand
 ```
-, and the D-H parameters, corresponding to the Barrett-Hand, that were already present in the config-file, were un-commented. 
+, and the D-H parameters, corresponding to the Barrett-Hand, that were already present in the config-file, were un-commented.
+
+Note: The motors being referred to in this config are the motors driving the cables, not any joint motors (that one may be defining in ROS).
+
