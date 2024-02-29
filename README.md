@@ -160,3 +160,28 @@ calibration-poses-wam7{
    pose[] = < -0.7854,  0.7854, -0.7854, -0.7854,  0.7854, -0.7854,  0.7854 >
 }
 ```
+
+The gravity calibration process gives us mass values of the involved links, to be used when trying to counter-act gravity. These calibration values are to be introduced into the WAM configuration file, above the `safety{}` section [Barrett Wiki](https://support.barrett.com/wiki/WAM/Calibration).
+
+### Configuration File
+
+The configuration file for the WAM is located on the WAM PC at `~/btclient/config/`, and, for our 7 DOF WAM, it is called the `WAM7.conf`. An introductory video to walk through various aspects of the configuration file can be found [here](https://web.barrett.com/support/WAM_VideoSupport/Getting_Started/04_WAMConfigFile.mov).
+
+By comparing the link inertia values stored in the config-file with that in the [Barrett Wiki](https://web.barrett.com/support/WAM_Documentation/WAM_InertialSpecifications_AC-02.pdf), it was determined that the inertias being used correspond to the intertia being defined at the center-of-mass and aligned w.r.t the output coordinate system. We were able to determine this by comparing the values, and found that the inertia-matrix value for this definition most closely matches with the one found in the config-file. This information is nescessary as there are 3 descriptions of the inertia-matrix in the documentation, and the same type is being used to describe the inertia property of all links, including the end-effector.
+
+The inertia, and COM location of the end-effector were not matching/present in the original config-file. Since our WAM will be using the Barrett-Hand as an end-effector, it is nescessary to provide the correct inertia values for more accurate planned-trajectory-adherence. The following additions were made:
+
+#### COM Location
+```
+com = <0.006, 0.0, 0.057> # BarrettHand BH8-280 (https://support.barrett.com/wiki/Hand/280)
+```
+
+#### Inertia values
+```
+# Inertial matrix, chosen at this link's center of mass and aligned with the output coordinate (page 3 of https://web.barrett.com/support/BarrettHand_Documentation/BarrettHand280MassProp-2010Dec10.pdf)
+        #I = <<0.0, 0.0, 0.0>,<0.0, 0.0, 0.0>,<0.0, 0.0, 0.0>>
+        I = << 0.00152162,-0.00000366, 0.00001980 >, 
+             <-0.00000366, 0.00207291,-0.00000102 >,
+             < 0.00001980,-0.00000102, 0.00161521 >> # BarrettHand
+```
+, and the D-H parameters, corresponding to the Barrett-Hand, that were already present in the config-file, were un-commented. 
