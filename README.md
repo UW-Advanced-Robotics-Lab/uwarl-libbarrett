@@ -94,72 +94,26 @@ File -> Import -> General -> Existing Projects into Workspace
 
 For gravity calibration, follow the instructions on the [Quick Start Guide](https://web.barrett.com/support/WAM_Documentation/WAM_QuickStartGuide.pdf). Do not follow process defined in [Barrett Wiki](https://support.barrett.com/wiki/WAM/Calibration), as the function `./calibrate`->`Calibrate Gravity Compensation` fails to load.
 
-The default `cal.conf` has the following look:
+The default `calibration.conf`, in `~/.barrett/`, has the following look:
 
 ```
-# WAM Gravity Calibration Pose Configuration
-
-calibration-poses-wam4{
-    poseCount = 5
-    pose[] = < 0.0, -1.5708,     0.0,    0.0 >
-    pose[] = < 0.0, -1.5708, -1.5708, 1.5708 >
-    pose[] = < 0.0,     0.0, -1.5708, 1.5708 >
-    pose[] = < 0.0,     0.0,     0.0,    0.0 >
-    pose[] = < 0.0,  1.5708,     0.0,    0.0 >
-}
-
-# Note - J5 joint stops are at +1.24 and -4.76
-#        J6 joint stops are at +1.57 and -1.57
-calibration-poses-wam7{
-   poseCount = 9
-   pose[] = <     0.0, -1.5708,     0.0,  1.5708,     0.0,     0.0,     0.0 >
-   pose[] = <  0.7854, -1.5708,  1.5708,  1.5708, -1.5708,     0.0,     0.0 >
-   pose[] = < -0.7854, -1.5708, -1.5708,  1.5708, -1.5708,     0.0,     0.0 >
-   pose[] = < -0.7854,  1.5708,  1.5708,  1.5708,     0.0,     1.5,     0.0 >
-   pose[] = <     0.0,  0.7854,     0.0,  2.3562,     0.0, -0.7854,     0.0 > 
-   pose[] = <  0.7854,  1.5708, -1.5708,  1.5708,     0.0,     1.5,     0.0 >
-   pose[] = <     0.0,     0.0,  0.7854,  1.5708,  0.7854,  0.7854,  0.7854 >
-   pose[] = <     0.0,  1.5708, -1.5708, -0.3927,  0.7854, -1.0781, -0.7854 >
-   pose[] = < -0.7854,  0.7854, -0.7854, -0.7854,  0.7854, -0.7854,  0.7854 >
-}
+    wam7w:
+	(
+		(     0.0, -1.5708,     0.0,  1.5708,     0.0,     0.0,     0.0 ),
+		(  0.7854, -1.5708,  1.5708,  1.5708, -1.5708,     0.0,     0.0 ),
+		( -0.7854, -1.5708, -1.5708,  1.5708, -1.5708,     0.0,     0.0 ),
+		( -0.7854,  1.5708,  1.5708,  1.5708,     0.0,     1.5,     0.0 ),
+		(     0.0,  0.7854,     0.0,  2.3562,     0.0, -0.7854,     0.0 ),
+		(  0.7854,  1.5708, -1.5708,  1.5708,     0.0,     1.5,     0.0 ),
+		(     0.0,     0.0,  0.7854,  1.5708,  0.7854,  0.7854,  0.7854 ),
+		(     0.0,  1.5708, -1.5708, -0.3927,  0.7854, -1.0781, -0.7854 ),
+		( -0.7854,  0.7854, -0.7854, -0.7854,  0.7854, -0.7854,  0.7854 )
+	);
 ```
 
 According to the [Barrett Wiki](https://support.barrett.com/wiki/WAM/Calibration), gravity calibration process approaches these poses twice: once from larger joint angle values, and once from lower joint angle values. This is because the joint torques expereinced during bothe these approaches are different, and so they take their average and record it.
 
-Because of this, we cannot have joint angles of these sample poses too close to the physical joint-angle limits of each joint. So, we extend the information for joint angle limits to other joints and replace it with the following copy:
-
-```
-# WAM Gravity Calibration Pose Configuration
-
-calibration-poses-wam4{
-    poseCount = 5
-    pose[] = < 0.0, -1.5708,     0.0,    0.0 >
-    pose[] = < 0.0, -1.5708, -1.5708, 1.5708 >
-    pose[] = < 0.0,     0.0, -1.5708, 1.5708 >
-    pose[] = < 0.0,     0.0,     0.0,    0.0 >
-    pose[] = < 0.0,  1.5708,     0.0,    0.0 >
-}
-
-# Note - J1 joint stops are at +2.6  and -2.6  rad
-#        J2 joint stops are at +2.0  and -2.0  rad
-#        J3 joint stops are at +2.8  and -2.8  rad
-#        J4 joint stops are at +3.1  and -0.9  rad
-#        J5 joint stops are at +1.24 and -4.76 rad
-#        J6 joint stops are at +1.57 and -1.57 rad | They are slightly different on the official wiki (https://support.barrett.com/wiki/WAM/KinematicsJointRangesConversionFactors)
-#        J7 joint stops are at +3.0  and -3.0  rad
-calibration-poses-wam7{
-   poseCount = 9
-   pose[] = <     0.0, -1.5708,     0.0,  1.5708,     0.0,     0.0,     0.0 >
-   pose[] = <  0.7854, -1.5708,  1.5708,  1.5708, -1.5708,     0.0,     0.0 >
-   pose[] = < -0.7854, -1.5708, -1.5708,  1.5708, -1.5708,     0.0,     0.0 >
-   pose[] = < -0.7854,  1.5708,  1.5708,  1.5708,     0.0,     1.5,     0.0 >
-   pose[] = <     0.0,  0.7854,     0.0,  2.3562,     0.0, -0.7854,     0.0 > 
-   pose[] = <  0.7854,  1.5708, -1.5708,  1.5708,     0.0,     1.5,     0.0 >
-   pose[] = <     0.0,     0.0,  0.7854,  1.5708,  0.7854,  0.7854,  0.7854 >
-   pose[] = <     0.0,  1.5708, -1.5708, -0.3927,  0.7854, -1.0781, -0.7854 >
-   pose[] = < -0.7854,  0.7854, -0.7854, -0.7854,  0.7854, -0.7854,  0.7854 >
-}
-```
+Because of this, we cannot have joint angles of these sample poses too close to the physical joint-angle limits of each joint.
 
 You can see that, in poses 4 and 6, joint 6 comes quite close to its joint limits. Since this poses were included as default-ones in the installation package, we can assume that this level of margin from their respective joint-limits is tolerable for this procedure. 
 
@@ -194,7 +148,7 @@ Note: The motors being referred to in this config are the motors driving the cab
 
 Here, we examine the causes of periodic/persistant causes of Gravity compensation calibration failure, particularly when executing pose 8 mentioned in the above documentation of the poses being adhered to during calibration.
 
-Upon examining the Error log-files, located in `/var/log/syslog', it is still unclear what is the cause of the failure:
+Upon examining the Error log-files `syslog`, located in `/var/log/', it is still unclear what is the cause of the failure:
 
 ```
 Mar  1 09:03:45 localhost bt-wam-gravitycal: ProductManager::ProductManager()
