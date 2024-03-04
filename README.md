@@ -77,6 +77,31 @@ Optional: Package the library as a tar-ball (not common)
 make package
 ```
 
+### Git-controlling COnfiguration-folders
+Due to the end-effector of the robot being swappable between the BHand and the stump, it is nescessary to be able to swap-out the inertia's of said component in the config-file. In order to prevent any un-due changes from occuring in the configuration-files (since it will directly impact how the robot behaves), we git-control the documnets in the configuration-folders.
+
+Due to the Ubuntu-version (Groovy) being present in the WAM internal-PC being a legacy software, we avoid updating the packages, least something else breaks. Due to this, the ssh-protocol `ed25519`, which is what is being commonly used now for initializing a git-ssh connection (2024), is un-available. Support for `RSA` protocol has also been [dropped](https://github.blog/2021-09-01-improving-git-protocol-security-github/). Hence, the option we have choosen to follow is to use `ECDSA`, specifically the protocol `ecdsa-sha2-nistp256`, which is still supported by Git. This is a `256-bit` encryption, and the command to create a ssh-key using this protocol can be found [here](https://cloud.ibm.com/docs/hp-virtual-servers?topic=hp-virtual-servers-generate_ssh), which is:
+```
+ssh-keygen -t ecdsa -b 256 -C "axxxx@uwaterloo.ca"
+```
+DO NOT use the `sudo` privelage-elevation to execute the above line, as that will create ssh-keys for the root-user, not for the current robot-user, and we cannot access them subsequently.
+
+DO NOT enter a name in the field:
+```
+Enter file in which to save the key (/home/robot/.ssh/id_ecdsa):
+```
+as the debug-command `ssh -vT git@github.com` is not able to locate them, so you will not be able to diagnose any problems that may arise. This will create the ssh-id called `id_ecdsa` (and its corresponding public-key `id_ecdsa.pub`).
+
+We then add the created ssh-key:
+```
+ssh-add ~/.ssh/id_ecdsa
+```
+so that the ssh-client is able to use this key to connect with Git.
+
+Before connecting with git and pushing, we add the public-key onto the user's SSH key-list on Github (please follow the rest of Jack's procedure, starting step 2, as outlined [here](https://github.com/UW-Advanced-Robotics-Lab/lab-wiki/wiki/Waterloo-Steel%3APlatform-Setup-Workstation#133-ssh-keys--github)).
+
+Once this is done, we can verify that this PC can indeed connect with Git: `ssh -vT git@github.com`. It should terminate with an `Exit status 1` debug-message. In-case of failure, it will end with `Permission denied (publickey).`.
+
 ### Configuration Files for the WAM
 Upon installation of libbarrett, the configuration files of the robot are installed to the `/etc/barrett` directory. However, to give an additional flexibility of each user maintaining their own configurations for the same robot, by default, the configuration files are read from `~/.barrett` directory if it exists. If not, then libbarrett reads the necessary configuration files from `/etc/barrett/` directory. It is up to the user to maintain and populate the `~/.barrett` directory.
 
