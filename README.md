@@ -77,6 +77,16 @@ Optional: Package the library as a tar-ball (not common)
 make package
 ```
 
+### Eclipse IDE setup
+It is possible to use CMake to generate several output formats, including Eclipse CDT4 project files. For details, see:
+    http://www.paraview.org/Wiki/Eclipse_CDT4_Generator
+To generate Eclipse project files, run:
+```
+cmake . -G"Eclipse CDT4 - Unix Makefiles"
+```
+Then import the generated project into your Eclipse workspace using:
+File -> Import -> General -> Existing Projects into Workspace
+
 ### Git-controlling Configuration-folders
 Due to the end-effector of the robot being swappable between the BHand and the stump, it is nescessary to be able to swap-out the inertia's of said component in the config-file. In order to prevent any un-due changes from occuring in the configuration-files (since it will directly impact how the robot behaves), we git-control the documnets in the configuration-folders.
 
@@ -104,16 +114,6 @@ Once this is done, we can verify that this PC can indeed connect with Git: `ssh 
 
 ### Configuration Files for the WAM
 Upon installation of libbarrett, the configuration files of the robot are installed to the `/etc/barrett` directory. However, to give an additional flexibility of each user maintaining their own configurations for the same robot, by default, the configuration files are read from `~/.barrett` directory if it exists. If not, then libbarrett reads the necessary configuration files from `/etc/barrett/` directory. It is up to the user to maintain and populate the `~/.barrett` directory.
-
-### Eclipse IDE setup
-It is possible to use CMake to generate several output formats, including Eclipse CDT4 project files. For details, see:
-    http://www.paraview.org/Wiki/Eclipse_CDT4_Generator
-To generate Eclipse project files, run:
-```
-cmake . -G"Eclipse CDT4 - Unix Makefiles"
-```
-Then import the generated project into your Eclipse workspace using:
-File -> Import -> General -> Existing Projects into Workspace
 
 ### Gravity Calibration
 
@@ -235,7 +235,7 @@ Mar  1 09:07:27 localhost bt-wam-gravitycal:   num missed release points = 1
 Mar  1 09:07:27 localhost bt-wam-gravitycal:   num overruns = 2
 ```
 
-Since the pendant was showing Torque-Fault, we assume that the cause was of not modelling the inertias of the links, especially the BHand, as we had previously added its inertias to the `~/btclient/config/WAM7.conf` file.
+Since the pendant was showing Torque-Fault, we assume that the cause was of not modelling the inertias of the links, especially the BHand, as we had previously added its inertias to the `~/btclient/config/WAM7.conf` file. The numeric-display of the pendant showed `6`, [meaning](https://support.barrett.com/wiki/WAM/SafetyFeaturesPrecautions) that torque-fault had occured for joint 6.
 
 From the above log, we see that it first accesses the default configuration file, located at `/home/robot/.barrett/default.conf`, then, depending upon the current system configuration (what end-effector has been mounted), the system decides on using a wam configuration-file, namely `wam7w.conf`, located in `/home/robot/.barrett/`. Upon opening it, we find no tool description, inspite us adding them to the `~/btclient/config/WAM7.conf`. So, it remains unclear what purpose does the file at `~/btclient/config/WAM7.conf` serve.
 
