@@ -77,7 +77,7 @@ Optional: Package the library as a tar-ball (not common)
 make package
 ```
 
-### Git-controlling COnfiguration-folders
+### Git-controlling Configuration-folders
 Due to the end-effector of the robot being swappable between the BHand and the stump, it is nescessary to be able to swap-out the inertia's of said component in the config-file. In order to prevent any un-due changes from occuring in the configuration-files (since it will directly impact how the robot behaves), we git-control the documnets in the configuration-folders.
 
 Due to the Ubuntu-version (Groovy) being present in the WAM internal-PC being a legacy software, we avoid updating the packages, least something else breaks. Due to this, the ssh-protocol `ed25519`, which is what is being commonly used now for initializing a git-ssh connection (2024), is un-available. Support for `RSA` protocol has also been [dropped](https://github.blog/2021-09-01-improving-git-protocol-security-github/). Hence, the option we have choosen to follow is to use `ECDSA`, specifically the protocol `ecdsa-sha2-nistp256`, which is still supported by Git. This is a `256-bit` encryption, and the command to create a ssh-key using this protocol can be found [here](https://cloud.ibm.com/docs/hp-virtual-servers?topic=hp-virtual-servers-generate_ssh), which is:
