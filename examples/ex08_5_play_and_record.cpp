@@ -36,7 +36,8 @@ int wam_main(int argc, char** argv, ProductManager& pm, systems::Wam<DOF>& wam) 
 	BARRETT_UNITS_TEMPLATE_TYPEDEFS(DOF);
 	typedef boost::tuple<double, jp_type> jp_sample_type;
 
-	char trajFile[] = "MM_10_DOF_joint_seq_modified_map.txt";
+	char traj_file[] = "MM_10_DOF_joint_seq_modified_map.txt";
+	char rec_traj_file[] = "MM_10_DOF_joint_seq_modified_map_rec_traj.txt";
 
 	char recTrajFile[] = "recorded_traj_XXXXXX";
 	if (mkstemp(recTrajFile) == -1) {
@@ -45,7 +46,7 @@ int wam_main(int argc, char** argv, ProductManager& pm, systems::Wam<DOF>& wam) 
 	}
 
 	// Create input-stream connection with a file
-    std::ifstream myfile(trajFile);
+    std::ifstream myfile(traj_file);
 	// Check if the file can be read
 	if(myfile.good()==false)
 	{
@@ -177,7 +178,7 @@ int wam_main(int argc, char** argv, ProductManager& pm, systems::Wam<DOF>& wam) 
 
 	std::cout << "WAM in idle-state. Writing recorded trajectory to file ..." << std::endl;
 	// Output stuff to an external file
-    std::ofstream outfile ("traj_file.txt");
+    std::ofstream outfile (rec_traj_file);
     // Set precision: tells the maximum number of digits to use not the minimum; so no trailing zeros (https://stackoverflow.com/a/17342002/19163020)
     outfile << std::setprecision (std::numeric_limits<double>::digits10 + 1);
     // Output each element of the vector vec at a time
