@@ -66,6 +66,16 @@ cd ~/libbarrett/examples && cmake .
 make -j$(nproc)
 ```
 
+### Add files from your PC onto the WAM PC
+The copy line should look like this:
+```
+scp arnabx17@arnabx17-Alienware-x17-R2:~/Downloads/MM_10_DOF_joint_seq_test.txt ~/libbarrett_examples/MM_10_DOF_joint_seq_test.txt
+```
+where we are copying the text file `MM_10_DOF_joint_seq_test.txt` from the external PC `arnabx17@arnabx17-Alienware-x17-R2` onto the WAM PC at `~/libbarrett_examples`.
+
+### Build additional custom examples
+Add the names of the new `.cpp` programs (without the extension) in the `CMakeLists.txt` file in `~/libbarrett` under the list `add_programs`.
+
 ### Additional Makefile targets
 Optional: Update or install configuration files only - not necessary if you have already done a full make (above)
 ```
