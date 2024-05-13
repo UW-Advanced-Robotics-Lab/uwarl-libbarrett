@@ -35,6 +35,7 @@ template<size_t DOF>
 int wam_main(int argc, char** argv, ProductManager& pm, systems::Wam<DOF>& wam) {
 	BARRETT_UNITS_TEMPLATE_TYPEDEFS(DOF);
 	typedef boost::tuple<double, jp_type> jp_sample_type;
+    typedef boost::tuple<double, jp_type, jt_type> jp_jt_sample_type;
 
 	char traj_file[] = "MM_10_DOF_joint_seq_test_0_5_s_Joint_5_2024_05_13_V1.txt";
 	char rec_traj_file[] = "MM_10_DOF_joint_seq_test_0_5_s_Joint_5_2024_05_13_rec_traj_V1.txt";
@@ -59,7 +60,7 @@ int wam_main(int argc, char** argv, ProductManager& pm, systems::Wam<DOF>& wam) 
     std::string tmp_str_jnt_wp;
     // Create a vector of jp_sample_type to store the trajectory sequence
     std::vector<jp_sample_type> vec;
-	// Initialize an empty jp_sample_type object to store a trajectory information
+	// Initialize an empty jp_sample_type object to store a trajectory and joint torque information
 	jp_sample_type tmp_wam_traj_wp;
 	// Initialize an empty jp_type object to store a WAM joint way-point information
 	jp_type tmp_wam_wp;
@@ -124,36 +125,36 @@ int wam_main(int argc, char** argv, ProductManager& pm, systems::Wam<DOF>& wam) 
 
 	systems::Callback<double, jp_type> trajectory(boost::ref(spline));
 	connect(time.output, trajectory.input); // Connect a time-source to the trajectory.
-	// This time source will be used to dictate the current reference-position to be tracked.
+    // This time source will be used to dictate the current reference-position to be tracked.
 
 	// And now, we connect the reference to be followed (output) to the reference tracker.
 	wam.trackReferenceSignal(trajectory.output);
 
 	// Log the running joint positions, with time
-	// This is the same format of the custom tuple: jp_sample_type
-	systems::TupleGrouper<double, jp_type> jpLogTg;
+	// This is the same format of the custom tuple: jp_jt_sample_type
+	systems::TupleGrouper<double, jp_type, jt_type> jp_jt_LogTg;
 	// This will be used as a sort of collecting-agent, which will collect various 
 	// kinds of information sources: such as joint position, velocity, EE pose, etc.
 
 	// The sources will then be routed through this collection, and this collection will then be 
 	// handed over to the logger, which will log packets made up of this tuple.
-	connect(time.output, jpLogTg.template getInput<0>()); // Connecting the same time-source, that is being used for trajectory-following, to a particular index of the collection-source tuple
-	connect(wam.jpOutput, jpLogTg.template getInput<1>()); // Connecting the joint-position-source to a particular index of the collection-source tuple
-
+	connect(time.output, jp_jt_LogTg.template getInput<0>()); // Connecting the same time-source, that is being used for trajectory-following, to a particular index of the collection-source tuple
+	connect(wam.jpOutput, jp_jt_LogTg.template getInput<1>()); // Connecting the joint-position-source to a particular index of the collection-source tuple
+    connect(wam.jtSum.output, tg.template getInput<2>()); // Connecting the joint-torque-source to a particular index of the collection-source tuple
 	// Get Time-period from execution manager
 	const double T_s = pm.getExecutionManager()->getPeriod();
 
 	// At what time-period multiple should the recording be done at
 	const size_t PERIOD_MULTIPLIER = 10;
 	// Record at a fraction of the loop-rate
-	// The template `jp_sample_type' indicates what kinds of information, and in what sequence, will they be recorded in
-	systems::PeriodicDataLogger<jp_sample_type> jpLogger(pm.getExecutionManager(),
-			new barrett::log::RealTimeWriter<jp_sample_type>(recTrajFile, PERIOD_MULTIPLIER*T_s),
+	// The template `jp_jt_sample_type' indicates what kinds of information, and in what sequence, will they be recorded in
+	systems::PeriodicDataLogger<jp_jt_sample_type> jp_jt_Logger(pm.getExecutionManager(),
+			new barrett::log::RealTimeWriter<jp_jt_sample_type>(recTrajFile, PERIOD_MULTIPLIER*T_s),
 			PERIOD_MULTIPLIER);
 	// This defines how the logger will be accepting information.
 	// Notice how the packet definition is the same as the source-collection definition defined previously.
 	// This will allow for a seamless connection between a collection-source and the logger.
-	connect(jpLogTg.output, jpLogger.input); // Connecting the collection-source to the logger
+	connect(jp_jt_LogTg.output, jp_jt_Logger.input); // Connecting the collection-source to the logger
 
 	// Start ticking the clock
 	time.start();
@@ -163,8 +164,8 @@ int wam_main(int argc, char** argv, ProductManager& pm, systems::Wam<DOF>& wam) 
 	}
 
 	// Stop recording
-	jpLogger.closeLog();
-	disconnect(jpLogger.input);
+	jp_jt_Logger.closeLog();
+	disconnect(jp_jt_Logger.input);
 
 	std::cout << "Finished following the user-provided trajectory, and stopped recording the actual joint positions." << std::endl;
 	printf("Press [Enter] to go home.\n");
@@ -178,8 +179,8 @@ int wam_main(int argc, char** argv, ProductManager& pm, systems::Wam<DOF>& wam) 
 
 	std::cout << "WAM in idle-state. Writing recorded trajectory to file ..." << std::endl;
 	// Read the logger data into a vector
-	log::Reader<jp_sample_type> lr(recTrajFile);
-	std::vector<jp_sample_type> vec_rec_Traj_File;
+	log::Reader<jp_jt_sample_type> lr(recTrajFile);
+	std::vector<jp_jt_sample_type> vec_rec_Traj_File;
 	for (size_t i = 0; i < lr.numRecords(); ++i) {
 		vec_rec_Traj_File.push_back(lr.getRecord());
 	}
@@ -196,6 +197,11 @@ int wam_main(int argc, char** argv, ProductManager& pm, systems::Wam<DOF>& wam) 
         for (size_t col_index = 0; col_index<DOF; ++col_index)
         {
             outfile << "," << boost::get<1>(vec_rec_Traj_File[row_index])[col_index];
+        }
+        // Write the joint torques
+        for (size_t col_index = 0; col_index<DOF; ++col_index)
+        {
+            outfile << "," << boost::get<2>(vec_rec_Traj_File[row_index])[col_index];
         }
         // Start on new line
         outfile << std::endl;
