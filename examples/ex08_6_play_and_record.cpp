@@ -140,7 +140,8 @@ int wam_main(int argc, char** argv, ProductManager& pm, systems::Wam<DOF>& wam) 
 	// handed over to the logger, which will log packets made up of this tuple.
 	connect(time.output, jp_jt_LogTg.template getInput<0>()); // Connecting the same time-source, that is being used for trajectory-following, to a particular index of the collection-source tuple
 	connect(wam.jpOutput, jp_jt_LogTg.template getInput<1>()); // Connecting the joint-position-source to a particular index of the collection-source tuple
-    connect(wam.jtSum.output, tg.template getInput<2>()); // Connecting the joint-torque-source to a particular index of the collection-source tuple
+    // On page 30 of https://web.barrett.com/support/WAM_Documentation/WAM_Training_Documentation.pdf, the `jtSum` is used to output the commanded joint torques.  
+    connect(wam.jtSum.output, jp_jt_LogTg.template getInput<2>()); // Connecting the joint-torque-source to a particular index of the collection-source tuple
 	// Get Time-period from execution manager
 	const double T_s = pm.getExecutionManager()->getPeriod();
 
