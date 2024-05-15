@@ -1,8 +1,11 @@
 #include <iostream>
 #include <string>
 
+#include <boost/tuple/tuple.hpp>
+
 #include <barrett/units.h>
 #include <barrett/systems.h>
+#include <barrett/log.h>
 #include <barrett/products/product_manager.h>
 #include <barrett/detail/stl_utils.h>
 
