@@ -107,7 +107,8 @@ int wam_main(int argc, char** argv, ProductManager& pm, systems::Wam<DOF>& wam) 
 
 	// Begin gravity compensation
 	wam.gravityCompensate();
-
+	
+	// Start a time variable
 	systems::Ramp time(pm.getExecutionManager());
 
 	// Build spline between recorded points
@@ -130,7 +131,7 @@ int wam_main(int argc, char** argv, ProductManager& pm, systems::Wam<DOF>& wam) 
 	// And now, we connect the reference to be followed (output) to the reference tracker.
 	wam.trackReferenceSignal(trajectory.output);
 
-	// Log the running joint positions, with time
+	// Log the running joint positions and torque, with time
 	// This is the same format of the custom tuple: jp_jt_sample_type
 	systems::TupleGrouper<double, jp_type, jt_type> jp_jt_LogTg;
 	// This will be used as a sort of collecting-agent, which will collect various 
