@@ -15,7 +15,8 @@
 using namespace barrett;
 using detail::waitForEnter;
 
-// For giving positive torque at Motor 6.
+// For giving negative torque at Motor 5 because motion range of joint 5 is limited with positive torque using motor 5.
+
 
 template<size_t DOF>
 // For the single-output template, the input could be anything; it's just that there was a pre-existing example of
@@ -35,15 +36,15 @@ protected:
 	// What is the max amount of torque do you want to exert?
 	double max_torque;
 	// At what rate do you want to increase torque amount by till max torque?
-	static const double TORQUE_INC_RATE = 0.1/500;
+	static const double TORQUE_INC_RATE = 0.05/500;
 	jt_type jt;
 
 	virtual void operate() {
-		if(jt[J_IDX_1]<max_torque) {
-			jt[J_IDX_1] = jt[J_IDX_1] + TORQUE_INC_RATE;
+		if(jt[J_IDX_1]>-max_torque) {
+			jt[J_IDX_1] = jt[J_IDX_1] - TORQUE_INC_RATE;
 			jt[J_IDX_2] = jt[J_IDX_2] + TORQUE_INC_RATE;
 		} else {
-			jt[J_IDX_1] = max_torque;
+			jt[J_IDX_1] = -max_torque;
 			jt[J_IDX_2] = max_torque;
 		}
 		// What ever is in the `jt` variable, keep publishing it as an output
@@ -61,7 +62,7 @@ int wam_main(int argc, char** argv, ProductManager& pm, systems::Wam<DOF>& wam) 
 	// To record a collection of joint-positions and commanded joint torques, make a tuple to record them in
 	typedef boost::tuple<double, jp_type, jt_type> jp_jt_sample_type;
 	// File name for recording joint position and torques
-	char rec_traj_file[] = "Const_Motor_6_torque_2024_05_15_rec_traj_V1.txt";
+	char rec_traj_file[] = "Const_Motor_6_torque_2024_05_16_rec_traj_V2.txt";
 
 	// A temporary file to log the relevant data
 	char recTrajFile[] = "recorded_traj_XXXXXX";
@@ -108,7 +109,7 @@ int wam_main(int argc, char** argv, ProductManager& pm, systems::Wam<DOF>& wam) 
 	printf("Press [Enter] to exert a constant torque.");
 	waitForEnter();
 
-	J_const_torque<DOF> j1s(1.0);
+	J_const_torque<DOF> j1s(2.0);
 	systems::connect(wam.jpOutput, j1s.input);
 	wam.trackReferenceSignal(j1s.output);
 

@@ -15,9 +15,13 @@
 using namespace barrett;
 using detail::waitForEnter;
 
+// For giving negative torque at Motor 6 because motion range of joint 5 is limited with positive torque using motor 6.
+// Torque required to observe motion using negative motor 6 torque was raised from 1 Nm to 2 Nm since no motion was observed
+// when imposing -1 Nm over motor 6. 
+// However, motion was observed for 1 Nm when applying positive motor 6 torque.
 
 template<size_t DOF>
-// FOr the single-output template, the input could be anything; it's just that there was a pre-existing example of
+// For the single-output template, the input could be anything; it's just that there was a pre-existing example of
 // having `JointPositions` already present.
 class J_const_torque : public systems::SingleIO<typename units::JointPositions<DOF>::type, typename units::JointTorques<DOF>::type> {
 	BARRETT_UNITS_TEMPLATE_TYPEDEFS(DOF);
