@@ -34,7 +34,7 @@ protected:
 	// What is the max amount of torque do you want to exert?
 	double max_torque;
 	// At what rate do you want to increase torque amount by till max torque?
-	static const double TORQUE_INC_RATE = 0.1/500;
+	static const double TORQUE_INC_RATE = 0.05/500;
 	jt_type jt;
 
 	virtual void operate() {
@@ -107,7 +107,7 @@ int wam_main(int argc, char** argv, ProductManager& pm, systems::Wam<DOF>& wam) 
 	printf("Press [Enter] to exert a constant torque.");
 	waitForEnter();
 
-	J_const_torque<DOF> j1s(1.0);
+	J_const_torque<DOF> j1s(2.0);
 	systems::connect(wam.jpOutput, j1s.input);
 	wam.trackReferenceSignal(j1s.output);
 
