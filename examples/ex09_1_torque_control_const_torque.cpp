@@ -29,8 +29,8 @@ public:
 
 protected:
 	// Which joint do you want to exert constant torque on?
-	static const size_t J_IDX_1 = 5;
-	static const size_t J_IDX_2 = 6;
+	static const size_t J_IDX_1 = 4; // Joint 5
+	static const size_t J_IDX_2 = 5; // Joint 6
 	// What is the max amount of torque do you want to exert?
 	double max_torque;
 	// At what rate do you want to increase torque amount by till max torque?
