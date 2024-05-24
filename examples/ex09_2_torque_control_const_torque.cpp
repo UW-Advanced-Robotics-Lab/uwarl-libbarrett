@@ -64,7 +64,7 @@ int wam_main(int argc, char** argv, ProductManager& pm, systems::Wam<DOF>& wam) 
 	// To record a collection of joint-positions and commanded joint torques, make a tuple to record them in
 	typedef boost::tuple<double, jp_type, jt_type> jp_jt_sample_type;
 	// File name for recording joint position and torques
-	char rec_traj_file[] = "Const_Motor_6_torque_2024_05_16_rec_traj_V2.txt";
+	char rec_traj_file[] = "Const_Motor_6_torque_2024_05_23_rec_traj_V1.txt";
 
 	// A temporary file to log the relevant data
 	char recTrajFile[] = "recorded_traj_XXXXXX";

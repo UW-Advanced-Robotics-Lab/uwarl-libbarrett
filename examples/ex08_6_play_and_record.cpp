@@ -37,8 +37,9 @@ int wam_main(int argc, char** argv, ProductManager& pm, systems::Wam<DOF>& wam) 
 	typedef boost::tuple<double, jp_type> jp_sample_type;
     typedef boost::tuple<double, jp_type, jt_type> jp_jt_sample_type;
 
-	char traj_file[] = "MM_10_DOF_joint_seq_test_0_5_s_Joint_5_2024_05_13_V1.txt";
-	char rec_traj_file[] = "MM_10_DOF_joint_seq_test_0_5_s_Joint_5_2024_05_13_rec_traj_V1.txt";
+	char traj_file[] = "MM_10_DOF_joint_seq_test_0_5_s_Motor_6_2024_05_14_V1.txt";
+	// Same trajectory, different recording
+	char rec_traj_file[] = "MM_10_DOF_joint_seq_test_0_5_s_Motor_6_2024_05_14_rec_traj_V1_3.txt";
 
 	char recTrajFile[] = "recorded_traj_XXXXXX";
 	if (mkstemp(recTrajFile) == -1) {
