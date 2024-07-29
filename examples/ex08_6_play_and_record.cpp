@@ -40,7 +40,9 @@ int wam_main(int argc, char** argv, ProductManager& pm, systems::Wam<DOF>& wam) 
 	char traj_file[] = "MM_10_DOF_joint_seq_test_0_5_s_Motor_6_2024_05_14_V1.txt";
 	// Same trajectory, different recording
 	char rec_traj_file[] = "MM_10_DOF_joint_seq_test_0_5_s_Motor_6_2024_05_14_rec_traj_V1_3.txt";
-
+	// Time-step (sec)
+	const float time_step = 0.5;
+	
 	char recTrajFile[] = "recorded_traj_XXXXXX";
 	if (mkstemp(recTrajFile) == -1) {
 		printf("ERROR: Couldn't create temporary file!\n");
@@ -73,8 +75,7 @@ int wam_main(int argc, char** argv, ProductManager& pm, systems::Wam<DOF>& wam) 
 	double tmp_wp[num_DOF];
 	// Keep track of traj text-file column index
 	size_t col_index;
-	// Time-step (sec)
-	const float time_step = 0.5;
+	
 	// Counter (to be incremented everytime a new line has been read from the file)
 	unsigned long int counter = 0;
     // Read the file line-by line, and store it in a vector
