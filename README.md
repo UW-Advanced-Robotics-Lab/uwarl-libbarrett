@@ -97,6 +97,9 @@ cmake . -G"Eclipse CDT4 - Unix Makefiles"
 Then import the generated project into your Eclipse workspace using:
 File -> Import -> General -> Existing Projects into Workspace
 
+### Externally connecting to the WAM internal PC
+You can use the [wamdiscover.py](http://web.barrett.com/support/WAM_Installer/wamdiscover.py) on the wiki [page](https://support.barrett.com/wiki/WAM/PC104) to automate the act of finding the IP and connecting to the WAM if it and the user's PC are on the same network (router).
+
 ### Git-controlling Configuration-folders
 Due to the end-effector of the robot being swappable between the BHand and the stump, it is nescessary to be able to swap-out the inertia's of said component in the config-file. In order to prevent any un-due changes from occuring in the configuration-files (since it will directly impact how the robot behaves), we git-control the documnets in the configuration-folders.
 
