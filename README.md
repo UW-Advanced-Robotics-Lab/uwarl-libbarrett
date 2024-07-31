@@ -126,7 +126,31 @@ Before connecting with git and pushing, we add the public-key onto the user's SS
 Once this is done, we can verify that this PC can indeed connect with Git: `ssh -vT git@github.com`. It should terminate with an `Exit status 1` debug-message. In-case of failure, it will end with `Permission denied (publickey).`.
 
 ### Configuration Files for the WAM
+
 Upon installation of libbarrett, the configuration files of the robot are installed to the `/etc/barrett` directory. However, to give an additional flexibility of each user maintaining their own configurations for the same robot, by default, the configuration files are read from `~/.barrett` directory if it exists. If not, then libbarrett reads the necessary configuration files from `/etc/barrett/` directory. It is up to the user to maintain and populate the `~/.barrett` directory.
+
+The kinetic and dynamic configurations of the WAM, that are used by functions like `bt-wam-autotension`, `bt-wam-zerocalibration`, and `bt-wam-gravitycal`, are located in here (`WAM7G.conf`), NOT in `~/btclient/config/`. When comparing the inertia, D-H parameters, COM-position, and mass-values (here)[https://web.barrett.com/support/WAM_Documentation/WAM_InertialSpecifications_AC-02.pdf], they match with `~/.barrett`, NOT `~/btclient/config/`.
+
+By comparing the link inertia values stored in the config-file with that in the [Barrett Wiki](https://web.barrett.com/support/WAM_Documentation/WAM_InertialSpecifications_AC-02.pdf), it was determined that the inertias being used correspond to the intertia being defined at the center-of-mass and aligned w.r.t the output coordinate system. This information is nescessary as there are 3 descriptions of the inertia-matrix in the documentation, and the same type is being used to describe the inertia property of all links, including the end-effector.
+
+The inertia, and COM location of the end-effector were not matching/present in the original config-file. Since our WAM will be using the Barrett-Hand as an end-effector, it is nescessary to provide the correct inertia values for more accurate planned-trajectory-adherence. The following additions were made:
+
+#### COM Location
+```
+com = <0.006, 0.0, 0.057> # BarrettHand BH8-280 (https://support.barrett.com/wiki/Hand/280)
+```
+
+#### Inertia values
+```
+# Inertial matrix, chosen at this link's center of mass and aligned with the output coordinate (page 3 of https://web.barrett.com/support/BarrettHand_Documentation/BarrettHand280MassProp-2010Dec10.pdf)
+        #I = <<0.0, 0.0, 0.0>,<0.0, 0.0, 0.0>,<0.0, 0.0, 0.0>>
+        I = << 0.00152162,-0.00000366, 0.00001980 >, 
+             <-0.00000366, 0.00207291,-0.00000102 >,
+             < 0.00001980,-0.00000102, 0.00161521 >> # BarrettHand
+```
+, and the D-H parameters, corresponding to the Barrett-Hand, that were already present in the config-file, were un-commented.
+
+Note: The motors being referred to in this config are the motors driving the cables, not any joint motors (that one may be defining in ROS).
 
 ### Gravity Calibration
 
@@ -159,28 +183,14 @@ The gravity calibration process gives us mass values of the involved links, to b
 
 ### Configuration File
 
+#### NOTE:
+The kinetic and dynamic configurations of the WAM that are used by functions like `bt-wam-autotension`, `bt-wam-zerocalibration`, and `bt-wam-gravitycal` are not located here in this folder (`~/btclient/config/`), but are located in (`~/.barrett`). When comparing the inertia, D-H parameters, COM-position
+
 The configuration file for the WAM is located on the WAM PC at `~/btclient/config/`, and, for our 7 DOF WAM, it is called the `WAM7.conf`. An introductory video to walk through various aspects of the configuration file can be found [here](https://web.barrett.com/support/WAM_VideoSupport/Getting_Started/04_WAMConfigFile.mov).
 
-By comparing the link inertia values stored in the config-file with that in the [Barrett Wiki](https://web.barrett.com/support/WAM_Documentation/WAM_InertialSpecifications_AC-02.pdf), it was determined that the inertias being used correspond to the intertia being defined at the center-of-mass and aligned w.r.t the output coordinate system. We were able to determine this by comparing the values, and found that the inertia-matrix value for this definition most closely matches with the one found in the config-file. This information is nescessary as there are 3 descriptions of the inertia-matrix in the documentation, and the same type is being used to describe the inertia property of all links, including the end-effector.
+#### TO DO:
+- Check if there is any dependency of the barrett-library on the config-files stored here.
 
-The inertia, and COM location of the end-effector were not matching/present in the original config-file. Since our WAM will be using the Barrett-Hand as an end-effector, it is nescessary to provide the correct inertia values for more accurate planned-trajectory-adherence. The following additions were made:
-
-#### COM Location
-```
-com = <0.006, 0.0, 0.057> # BarrettHand BH8-280 (https://support.barrett.com/wiki/Hand/280)
-```
-
-#### Inertia values
-```
-# Inertial matrix, chosen at this link's center of mass and aligned with the output coordinate (page 3 of https://web.barrett.com/support/BarrettHand_Documentation/BarrettHand280MassProp-2010Dec10.pdf)
-        #I = <<0.0, 0.0, 0.0>,<0.0, 0.0, 0.0>,<0.0, 0.0, 0.0>>
-        I = << 0.00152162,-0.00000366, 0.00001980 >, 
-             <-0.00000366, 0.00207291,-0.00000102 >,
-             < 0.00001980,-0.00000102, 0.00161521 >> # BarrettHand
-```
-, and the D-H parameters, corresponding to the Barrett-Hand, that were already present in the config-file, were un-commented.
-
-Note: The motors being referred to in this config are the motors driving the cables, not any joint motors (that one may be defining in ROS).
 
 ### Gravity Compensation calibration: Errors
 
