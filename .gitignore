@@ -80,3 +80,13 @@ Debug/
 # Libbarrett generated files
 Doxyfile
 include/barrett/config.h
+*.json
+*.opendb
+*.vsidx
+*.db
+*.lock
+*.db-shm
+*.db-wal
+*.sqlite
+.vs/uwarl-libbarrett/v17/.suo
+.vs/CMake Overview

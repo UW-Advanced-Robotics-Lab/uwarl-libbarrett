@@ -37,6 +37,9 @@ add_programs(
 	ex06_realtime_move
 	ex07_realtime_data_logging
 	ex08_teach_and_play
+	ex08_3_read_tmp_file
+	ex08_4_play_custom_traj_from_file
+	ex08_5_play_and_record
 	ex09_torque_control
 	ex10_haptics
 	ex11_master_master
