@@ -125,7 +125,7 @@
 	typedef typename ::barrett::units::JointVelocities<dimension>::type jv_type;  \
 	typedef typename ::barrett::units::JointAccelerations<dimension>::type ja_type;  \
 	BARRETT_UNITS_FIXED_SIZE_TYPEDEFS
-
+// Reason for having tyname after typedef: https://stackoverflow.com/questions/18385418/c-meaning-of-a-statement-combining-typedef-and-typename
 
 #include <boost/tuple/tuple.hpp>
 #include <Eigen/Geometry>

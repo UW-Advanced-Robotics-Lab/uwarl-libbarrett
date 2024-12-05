@@ -11,13 +11,15 @@ endif()
 ## libbarrett
 find_package(Barrett REQUIRED)
 include_directories(${BARRETT_INCLUDE_DIRS})
+message(STATUS "BARRETT_INCLUDE_DIRS: ${BARRETT_INCLUDE_DIRS}")
 link_directories(${BARRETT_LIBRARY_DIRS})
+message(STATUS "BARRETT_LIBRARY_DIRS: ${BARRETT_LIBRARY_DIRS}")
 add_definitions(${BARRETT_DEFINITIONS})
+message(STATUS "BARRETT_DEFINITIONS: ${BARRETT_DEFINITIONS}")
 
 ## curses
 find_package(Curses REQUIRED)
 include_directories(${CURSES_INCLUDE_DIR})
-
 
 function(add_programs)
 	foreach (prog ${ARGV})
@@ -35,6 +37,9 @@ add_programs(
 	ex06_realtime_move
 	ex07_realtime_data_logging
 	ex08_teach_and_play
+	ex08_3_read_tmp_file
+	ex08_4_play_custom_traj_from_file
+	ex08_5_play_and_record
 	ex09_torque_control
 	ex10_haptics
 	ex11_master_master
